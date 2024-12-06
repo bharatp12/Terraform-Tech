@@ -1,0 +1,187 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "uat-keycloak",
+            "image": "842676014640.dkr.ecr.eu-west-2.amazonaws.com/uat_keycloak:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "httpport",
+                    "containerPort": 8380,
+                    "hostPort": 8380,
+                    "protocol": "tcp",
+                    "appProtocol": "http2"
+                },
+                {
+                    "name": "keycloak-https",
+                    "containerPort": 8443,
+                    "hostPort": 8443,
+                    "protocol": "tcp",
+                    "appProtocol": "http2"
+                }
+            ],
+            "essential": true,
+            "entryPoint": [
+                "/opt/keycloak/bin/kc.sh"
+            ],
+            "command": [
+                "start",
+                "--optimized"
+            ],
+            "environment": [
+                {
+                    "name": "KC_PROXY",
+                    "value": "edge"
+                },
+                {
+                    "name": "KC_DB",
+                    "value": "postgres"
+                },
+                {
+                    "name": "KC_HOSTNAME_STRICT_BACKCHANNEL",
+                    "value": "true"
+                },
+                {
+                    "name": "KC_HTTP_PORT",
+                    "value": "8380"
+                },
+                {
+                    "name": "KC_HTTP_ENABLED",
+                    "value": "true"
+                },
+                {
+                    "name": "KC_HOSTNAME_STRICT_HTTPS",
+                    "value": "false"
+                },
+                {
+                    "name": "KC_FEATURES",
+                    "value": "token-exchange,admin-fine-grained-authz"
+                },
+                {
+                    "name": "KC_HEALTH_ENABLED",
+                    "value": "true"
+                },
+                {
+                    "name": "KC_HTTPS_PROTOCOLS",
+                    "value": "TLSv1.3,TLSv1.2"
+                },
+                {
+                    "name": "KC_METRICS_ENABLED",
+                    "value": "true"
+                },
+                {
+                    "name": "PROXY_ADDRESS_FORWARDING",
+                    "value": "true"
+                },
+                {
+                    "name": "KC_DB_SCHEMA",
+                    "value": "public"
+                },
+                {
+                    "name": "KC_HOSTNAME_STRICT",
+                    "value": "false"
+                },
+                {
+                    "name": "REDIRECT_SOCKET",
+                    "value": "proxy-https"
+                }
+            ],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "KC_DB_PASSWORD",
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-2:842676014640:secret:Uat-keycloak-Dbn5oo:KC_DB_PASSWORD::"
+                },
+                {
+                    "name": "KC_DB_URL",
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-2:842676014640:secret:Uat-keycloak-Dbn5oo:KC_DB_URL::"
+                },
+                {
+                    "name": "KC_DB_USERNAME",
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-2:842676014640:secret:Uat-keycloak-Dbn5oo:KC_DB_USERNAME::"
+                },
+                {
+                    "name": "KEYCLOAK_ADMIN",
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-2:842676014640:secret:Uat-keycloak-Dbn5oo:KEYCLOAK_ADMIN::"
+                },
+                {
+                    "name": "KEYCLOAK_ADMIN_PASSWORD",
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-2:842676014640:secret:Uat-keycloak-Dbn5oo:KEYCLOAK_ADMIN_PASSWORD::"
+                }
+            ],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/uat_keycloak",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "eu-west-2",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        },
+        {
+            "name": "nginx",
+            "image": "842676014640.dkr.ecr.eu-west-2.amazonaws.com/uat_nginx_keycloak:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "httport",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http2"
+                }
+            ],
+            "essential": false,
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/uat_nginx_keycloak",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "eu-west-2",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "uat_keycloak",
+    "networkMode": "awsvpc",
+    "revision": 4,
+    "volumes": [],
+    "status": "ACTIVE",
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "2048",
+    "runtimePlatform": {
+        "cpuArchitecture": "ARM64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "tags": [
+        {
+            "key": "Name",
+            "value": "uat_keycloak"
+        }
+    ]
+}

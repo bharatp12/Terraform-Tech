@@ -1,0 +1,570 @@
+variables:
+  namespace: technoxander
+  customer: technoxander
+  account_numbers:
+    uat: "842676014640"
+    # staging: "467053692328"
+    # prod: "221262023899"
+  region:
+    uat: eu-west-2
+    # staging: eu-west-2
+    # prod: eu-west-2
+
+
+deployments:
+  - name: terraform-state-resources
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/tf-backend.cfn
+      parameters:
+        namespace: ${var namespace}
+      tags:
+        - type:base
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+
+  - name: vpc
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/vpc.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        vpc_name: technoxander-vpc-${env DEPLOY_ENVIRONMENT}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2
+
+
+  - name: SG
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/sg.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2
+
+  - name: truststores_s3
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/truststores_s3.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2 
+
+  - name: SNS
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/sns.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2
+
+
+  - name: rds
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/rds.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2
+
+  - name: IAM
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/iam.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2
+
+  - name: secretmanager
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/secretmanager.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2
+
+  - name: ec2
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/ec2.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2         
+
+  - name: ecr
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/ecr.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2 
+
+  - name: acm
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/acm.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2 
+
+  - name: alb
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/alb.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2 
+
+  - name: targetgroup
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/targetgroup.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2         
+
+  - name: ecs
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/ecs.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2 
+
+  - name: taskdef
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/taskdef.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2
+
+
+  - name: ECSNameSpace
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/ECSNameSpace.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2
+
+
+  - name: ecs-services
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/ecs-services.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2         
+
+  - name: EFS
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/EFS.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2  
+
+
+  # - name: kms key
+  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+  #   modules:
+  #   - path: runway/kms.tf
+  #     parameters:
+  #       environment: ${env DEPLOY_ENVIRONMENT}
+  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
+  #     tags:
+  #       - type:security
+  #       - ci:true
+  #       - prod:true
+  #       - dev:true
+  #       - staging:true
+  #   regions:
+  #     - eu-west-2
+  #   module_options:
+  #     terraform_version: "1.0.11"
+  #     terraform_backend_config:
+  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+  #       region: eu-west-2
+
+  # - name: Aurora Instance
+  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+  #   modules:
+  #   - path: runway/aurora.tf
+  #     parameters:
+  #       environment: ${env DEPLOY_ENVIRONMENT}
+  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
+  #       tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #       account_number: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+  #     tags:
+  #       - type:storage
+  #       - ci:true
+  #       - prod:true
+  #       - dev:true
+  #       - staging:true
+  #   regions:
+  #     - eu-west-2
+  #   module_options:
+  #     terraform_version: "1.0.11"
+  #     terraform_backend_config:
+  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+  #       region: eu-west-2
+
+
+
+
+  # - name: cloudfront s3
+  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+  #   modules:
+  #   - path: runway/cloudfront-s3.tf
+  #     parameters:
+  #       environment: ${env DEPLOY_ENVIRONMENT}
+  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
+  #       customer: ${var customer}
+  #       tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #     tags:
+  #       - type:storage
+  #       - ci:true
+  #       - prod:true
+  #       - dev:true
+  #       - staging:true
+  #   regions:
+  #     - eu-west-2
+  #   module_options:
+  #     terraform_version: "1.0.11"
+  #     terraform_backend_config:
+  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+  #       region: eu-west-2
+
+  # - name: s3
+  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+  #   modules:
+  #   - path: runway/s3.tf
+  #     parameters:
+  #       environment: ${env DEPLOY_ENVIRONMENT}
+  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
+  #       customer: ${var customer}
+  #       account_number: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+  #     tags:
+  #       - type:storage
+  #       - ci:true
+  #       - prod:true
+  #       - dev:true
+  #       - staging:true
+  #   regions:
+  #     - eu-west-2
+  #   module_options:
+  #     terraform_version: "1.0.11"
+  #     terraform_backend_config:
+  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+  #       region: eu-west-2
+
+
+  # - name: SNS
+  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+  #   modules:
+  #   - path: runway/sns.tf
+  #     parameters:
+  #       environment: ${env DEPLOY_ENVIRONMENT}
+  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
+  #       tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #     tags:
+  #       - type:storage
+  #       - ci:true
+  #       - prod:true
+  #       - dev:true
+  #       - staging:true
+  #   regions:
+  #     - eu-west-2
+  #   module_options:
+  #     terraform_version: "1.0.11"
+  #     terraform_backend_config:
+  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+  #       region: eu-west-2
+
+
+  # - name: EFS
+  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+  #   modules:
+  #   - path: runway/efs.tf
+  #     parameters:
+  #       environment: ${env DEPLOY_ENVIRONMENT}
+  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
+  #       tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #       account_number: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+  #     tags:
+  #       - type:storage
+  #       - ci:true
+  #       - prod:true
+  #       - staging:true
+  #   regions:
+  #     - eu-west-2
+  #   module_options:
+  #     terraform_version: "1.0.11"
+  #     terraform_backend_config:
+  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+  #       region: eu-west-2

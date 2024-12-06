@@ -1,0 +1,5 @@
+region               = "eu-west-2"
+namespace_name       = "technoxander.com"
+namespace_description = "UAT Service Discovery Namespace"
+environment          = "uat"
+project_name         = "Uat-Technoxander"
