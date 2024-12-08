@@ -492,148 +492,25 @@ deployments:
         dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
         region: eu-west-2 
 
-
-  # - name: kms key
-  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
-  #   modules:
-  #   - path: runway/kms.tf
-  #     parameters:
-  #       environment: ${env DEPLOY_ENVIRONMENT}
-  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
-  #     tags:
-  #       - type:security
-  #       - ci:true
-  #       - prod:true
-  #       - dev:true
-  #       - staging:true
-  #   regions:
-  #     - eu-west-2
-  #   module_options:
-  #     terraform_version: "1.0.11"
-  #     terraform_backend_config:
-  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
-  #       region: eu-west-2
-
-  # - name: Aurora Instance
-  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
-  #   modules:
-  #   - path: runway/aurora.tf
-  #     parameters:
-  #       environment: ${env DEPLOY_ENVIRONMENT}
-  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
-  #       tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #       account_number: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
-  #     tags:
-  #       - type:storage
-  #       - ci:true
-  #       - prod:true
-  #       - dev:true
-  #       - staging:true
-  #   regions:
-  #     - eu-west-2
-  #   module_options:
-  #     terraform_version: "1.0.11"
-  #     terraform_backend_config:
-  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
-  #       region: eu-west-2
-
-
-
-
-  # - name: cloudfront s3
-  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
-  #   modules:
-  #   - path: runway/cloudfront-s3.tf
-  #     parameters:
-  #       environment: ${env DEPLOY_ENVIRONMENT}
-  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
-  #       customer: ${var customer}
-  #       tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #     tags:
-  #       - type:storage
-  #       - ci:true
-  #       - prod:true
-  #       - dev:true
-  #       - staging:true
-  #   regions:
-  #     - eu-west-2
-  #   module_options:
-  #     terraform_version: "1.0.11"
-  #     terraform_backend_config:
-  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
-  #       region: eu-west-2
-
-  # - name: s3
-  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
-  #   modules:
-  #   - path: runway/s3.tf
-  #     parameters:
-  #       environment: ${env DEPLOY_ENVIRONMENT}
-  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
-  #       customer: ${var customer}
-  #       account_number: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
-  #     tags:
-  #       - type:storage
-  #       - ci:true
-  #       - prod:true
-  #       - dev:true
-  #       - staging:true
-  #   regions:
-  #     - eu-west-2
-  #   module_options:
-  #     terraform_version: "1.0.11"
-  #     terraform_backend_config:
-  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
-  #       region: eu-west-2
-
-
-  # - name: SNS
-  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
-  #   modules:
-  #   - path: runway/sns.tf
-  #     parameters:
-  #       environment: ${env DEPLOY_ENVIRONMENT}
-  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
-  #       tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #     tags:
-  #       - type:storage
-  #       - ci:true
-  #       - prod:true
-  #       - dev:true
-  #       - staging:true
-  #   regions:
-  #     - eu-west-2
-  #   module_options:
-  #     terraform_version: "1.0.11"
-  #     terraform_backend_config:
-  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
-  #       region: eu-west-2
-
-
-  # - name: EFS
-  #   account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
-  #   modules:
-  #   - path: runway/efs.tf
-  #     parameters:
-  #       environment: ${env DEPLOY_ENVIRONMENT}
-  #       region: ${var region.${env DEPLOY_ENVIRONMENT}}
-  #       tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #       account_number: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
-  #     tags:
-  #       - type:storage
-  #       - ci:true
-  #       - prod:true
-  #       - staging:true
-  #   regions:
-  #     - eu-west-2
-  #   module_options:
-  #     terraform_version: "1.0.11"
-  #     terraform_backend_config:
-  #       bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
-  #       dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
-  #       region: eu-west-2
+  - name: wellknown-cdn-s3
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/wellknown-cdn-s3-.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2 
