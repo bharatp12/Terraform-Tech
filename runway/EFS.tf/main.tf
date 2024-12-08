@@ -1,3 +1,6 @@
+
+#### NOTE: AutoMated Backup needs to update Manually from UI
+
 provider "aws" {
   region = "eu-west-2"
 }
@@ -46,14 +49,14 @@ resource "aws_efs_file_system" "efs" {
 }
 
 resource "aws_efs_mount_target" "efs_mount_target" {
-  for_each        = toset(data.terraform_remote_state.vpc.outputs.vpc_private_subnets)  
+  # for_each        = toset(data.terraform_remote_state.vpc.outputs.vpc_private_subnets)  
   file_system_id  = aws_efs_file_system.efs.id
   subnet_id       = data.terraform_remote_state.vpc.outputs.vpc_private_subnets[0]
   security_groups = [data.terraform_remote_state.sg.outputs.efs_vault_sg_id]
 }
 
 resource "aws_efs_mount_target" "efs_mount_target1" {
-  for_each        = toset(data.terraform_remote_state.vpc.outputs.vpc_private_subnets)  
+  # for_each        = toset(data.terraform_remote_state.vpc.outputs.vpc_private_subnets)  
   file_system_id  = aws_efs_file_system.efs.id
   subnet_id       = data.terraform_remote_state.vpc.outputs.vpc_private_subnets[1]
   security_groups = [data.terraform_remote_state.sg.outputs.efs_vault_sg_id]

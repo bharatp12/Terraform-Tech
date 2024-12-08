@@ -237,7 +237,7 @@ deployments:
         dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
         region: eu-west-2 
 
-  - name: acm
+  - name: acm acm-us-east-1.tf
     account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
     modules:
     - path: /home/asus/UAT-Runway/runway/acm.tf
@@ -258,7 +258,30 @@ deployments:
       terraform_backend_config:
         bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
         dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
-        region: eu-west-2 
+        region: eu-west-2
+
+  - name: acm-us-east-1.tf
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/acm-us-east-1.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: eu-west-2
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2    
 
   - name: alb
     account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
@@ -422,6 +445,52 @@ deployments:
         bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
         dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
         region: eu-west-2  
+
+  - name: s3
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/s3.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2 
+
+  - name: cdn-s3
+    account_id: ${var account_numbers.${env DEPLOY_ENVIRONMENT}}
+    modules:
+    - path: /home/asus/UAT-Runway/runway/cdn-s3.tf
+      parameters:
+        environment: ${env DEPLOY_ENVIRONMENT}
+        region: ${var region.${env DEPLOY_ENVIRONMENT}}
+        tf_state_bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+      tags:
+        - type:compute
+        - ci:true
+        - prod:true
+        - dev:true
+        - staging:true
+    regions:
+      - eu-west-2
+    module_options:
+      terraform_version: "1.7.5"
+      terraform_backend_config:
+        bucket: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateBucketName}
+        dynamodb_table: ${cfn ${var namespace}-${env DEPLOY_ENVIRONMENT}-tf-state.TerraformStateTableName}
+        region: eu-west-2 
 
 
   # - name: kms key

@@ -243,6 +243,65 @@ resource "aws_iam_role" "uat_ELK" {
   })
 }
 
+
+# Attach the EFS policy
+resource "aws_iam_role_policy" "efs_policy" {
+  name   = "efs_policy"
+  role   = aws_iam_role.uat_ELK.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "elasticfilesystem:ClientMount",
+          "elasticfilesystem:ClientWrite",
+          "elasticfilesystem:DescribeMountTargets"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# This will create cloudwatch logs for ecs-vault 
+resource "aws_cloudwatch_log_group" "uat_ecsvault_logs" {
+  name              = "uat-ecsvault-logs"
+  retention_in_days = 30  # Optional: Specifies how long the logs are retained (in days). Adjust as necessary.
+}
+
+resource "aws_cloudwatch_log_group" "uat-ecsvault-auditlogs" {
+  name              = "uat-ecsvault-auditlogs"
+  retention_in_days = 30  # Optional: Specifies how long the logs are retained (in days). Adjust as necessary.
+}
+
+# Attach the CloudWatch Logs policy to attach elk ec2 role. its for vault
+resource "aws_iam_role_policy" "logs_policy" {
+  name   = "logs_policy"
+  role   = aws_iam_role.uat_ELK.name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups"
+        ]
+        Resource = [
+          "${aws_cloudwatch_log_group.uat-ecsvault-auditlogs.arn}",
+          "${aws_cloudwatch_log_group.uat_ecsvault_logs.arn}:*"
+        ]
+      }
+    ]
+  })
+}
+
+
+
 #Instnace Profile Attach to EC2
 
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
