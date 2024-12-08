@@ -10,7 +10,7 @@ variable "region" {
 variable "cdn_name" {
   description = "The CloudFront Distribution domain name (CNAME)"
   type        = string
-  default = "bankingsuite-uat.technoxander.com"
+  default = "bankingsuite-newuat.technoxander.com"
 }
 
 variable "tf_state_bucket" {
@@ -27,5 +27,5 @@ variable "environment" {
 variable "bucket_name" {
   description = "The name of the S3 bucket"
   type        = string
-  default = "bankingsuite-uat.technoxander.com"
+  default = "bankingsuite-newuat.technoxander.com"
 }
